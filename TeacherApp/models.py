@@ -11,3 +11,4 @@ class Teacher(models.Model):
     Password = models.CharField(max_length=50)
     Course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
+
