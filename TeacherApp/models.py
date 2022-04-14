@@ -1,5 +1,5 @@
 from django.db import models
-from CourseApp.models import Course
+
 
 # This class created for Save , update,deleted ,list Teacher
 class Teacher(models.Model):
@@ -9,6 +9,6 @@ class Teacher(models.Model):
     SchoolName = models.CharField(max_length=250)
     UserName = models.CharField(max_length=250)
     Password = models.CharField(max_length=50)
-    Course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
 
 

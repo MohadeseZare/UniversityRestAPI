@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'ExerciseApp',
     'NewsApp',
     'StudentApp',
-    'UserApp'
+    'UserApp',
+    'ClassroomApp',
 ]
 
 MIDDLEWARE = [

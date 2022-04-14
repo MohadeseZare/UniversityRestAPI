@@ -1,5 +1,5 @@
 from django.db import models
-from CourseApp.models import Course
+
 
 class Student(models.Model):
     FirstName = models.CharField(max_length=250)
@@ -7,5 +7,5 @@ class Student(models.Model):
     NationalCode = models.IntegerField()
     UserName = models.CharField(max_length=250)
     Password = models.CharField(max_length=50)
-    Course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
 
