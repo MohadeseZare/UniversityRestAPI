@@ -7,8 +7,7 @@ class Teacher(models.Model):
     LastName = models.CharField(max_length=250)
     NationalCode = models.IntegerField()
     SchoolName = models.CharField(max_length=250)
-    UserName = models.CharField(max_length=250)
-    Password = models.CharField(max_length=50)
+
 
 
 
