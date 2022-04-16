@@ -1,9 +1,6 @@
-from django.urls import path
-from . import views
+from .views import NewsViewSet
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path('', views.NewsViewSet.as_view({'get': 'list'}), name='Newss'),
-    path('add/', views.NewsViewSet.as_view({'post': 'create'}), name='NewNews'),
-    path('<int:pk>/update/', views.NewsViewSet.as_view({'post': 'partial_update'}), name='EditNews'),
-    path('<int:pk>/delete/', views.NewsViewSet.as_view({'get': 'destroy'}), name='DeleteNews'),
-]
+router = DefaultRouter()
+router.register(r'', NewsViewSet, basename='News')
+urlpatterns = router.urls

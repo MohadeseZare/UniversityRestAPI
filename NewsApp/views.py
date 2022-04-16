@@ -1,9 +1,12 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
+from rest_framework_guardian import filters
+from .permissions import CustomObjectPermissions
 from .models import News
 from .serializers import NewsSerializer
 
 class NewsViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
     queryset = News.objects.all()
+    permission_classes = [CustomObjectPermissions]
     serializer_class = NewsSerializer
+    filter_backends = [filters.ObjectPermissionsFilter]
 
