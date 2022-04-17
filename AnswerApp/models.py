@@ -1,6 +1,6 @@
 from django.db import models
 from ExerciseApp.models import Exercise
-from  StudentApp.models import Student
+from StudentApp.models import Student
 
 class Answer(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
