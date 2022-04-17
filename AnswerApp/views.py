@@ -6,4 +6,8 @@ class AnswerViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Answer.objects.all()
     serializer_class = AnswerSerSerializer
+    filter_fields = (
+        'student',
+        'exercise',
+    )
 

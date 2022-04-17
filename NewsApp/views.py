@@ -8,5 +8,8 @@ class NewsViewSet(viewsets.ModelViewSet):
     queryset = News.objects.all()
     permission_classes = [CustomObjectPermissions]
     serializer_class = NewsSerializer
-    filter_backends = [filters.ObjectPermissionsFilter]
+    filter_fields = (
+        'Classroom',
+    )
+    #filter_backends = [filters.ObjectPermissionsFilter]
 

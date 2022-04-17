@@ -7,6 +7,10 @@ class ClassroomViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Classroom.objects.all()
     serializer_class = ClassroomSerializer
+    filter_fields = (
+        'teacher',
+        'students',
+    )
 
 
 

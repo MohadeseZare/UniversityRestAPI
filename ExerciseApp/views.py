@@ -7,17 +7,10 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
 
-'''
-    def get_queryset(self):
-        queryset = self.queryset
-        query_set = queryset.filter(Classroom=3)
-        return query_set
+    filter_fields = (
+        'Classroom',
+    )
 
-    def get_querysetForClassroom(self):
-        queryset = self.queryset
-        query_set = queryset.filter(Classroom=3)
-        return query_set
-'''
 
 
 
