@@ -5,6 +5,7 @@ from rest_framework.generics import UpdateAPIView
 from .serializers import UserSerializer, ChangePasswordSerializer
 from rest_framework import status
 from rest_framework.response import Response
+from django.contrib.auth import update_session_auth_hash
 
 
 class ChangePasswordView(UpdateAPIView):
