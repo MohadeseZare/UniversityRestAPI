@@ -13,7 +13,7 @@ class StudentViewSet(viewsets.ModelViewSet):
     serializer_class = StudentSerializer
 
 
-
+'''
     def create(self, request):
         firstname = request.POST['FirstName']
         lastname = request.POST['LastName']
@@ -29,5 +29,5 @@ class StudentViewSet(viewsets.ModelViewSet):
         }
         return Response(respons)
 
-
+'''
 

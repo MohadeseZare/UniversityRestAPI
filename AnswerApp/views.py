@@ -1,4 +1,5 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
+from .permissions import AnswerPermission
 from .models import Answer
 from .serializers import AnswerSerSerializer
 from django_filters import rest_framework as filters
@@ -6,7 +7,7 @@ from django_filters import rest_framework as filters
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [AnswerPermission,]
     queryset = Answer.objects.all()
     serializer_class = AnswerSerSerializer
     filter_backends = (filters.DjangoFilterBackend,)

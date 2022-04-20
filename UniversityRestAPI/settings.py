@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
     'guardian',
     'rest_framework.authtoken',
+    'rest_auth',
     'TeacherApp',
     'CourseApp',
     'ExerciseApp',
@@ -144,12 +145,20 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 ]
+
+AUTH_USER_MODEL ='UserApp.User'
+SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ]
+    ),
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+      'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+      'rest_framework.authentication.SessionAuthentication',
+      'rest_framework.authentication.BasicAuthentication',
+  ),
 }
 

@@ -1,18 +1,20 @@
 from rest_framework import viewsets, permissions
 from .models import Teacher
 from .serializers import TeacherSerializer
+from UserApp.models import User
+from UserApp.serializers import UserSerializer
 from UserApp.views import UserViewSet
 from rest_framework.response import Response
 
 class TeacherViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
-    queryset = Teacher.objects.all()
-    serializer_class = TeacherSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 
 
-
+'''
     def create(self, request):
         firstname = request.POST['FirstName']
         lastname = request.POST['LastName']
@@ -30,5 +32,5 @@ class TeacherViewSet(viewsets.ModelViewSet):
         "SchoolName": schoolName
     }
         return Response(respons)
-
+'''
 

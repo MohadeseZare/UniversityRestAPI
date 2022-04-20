@@ -1,20 +1,12 @@
-from django.contrib.auth.models import Group
-from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
+
 from rest_framework import serializers
+from ClassroomApp.models import Classroom
+from ExerciseApp.filterdata import FilteredClassroomRelatedcurentteacher
 from .models import News
 
-class NewsSerializer(ObjectPermissionsAssignmentMixin,serializers.ModelSerializer):
+class NewsSerializer(serializers.ModelSerializer):
+    Classroom = FilteredClassroomRelatedcurentteacher(queryset=Classroom.objects)
     class Meta:
         model = News
         fields = '__all__'
 
-        def get_permissions_map(self, created):
-            current_user = self.context['request'].user
-            readers = Group.objects.get(name='readers')
-            supervisors = Group.objects.get(name='supervisors')
-
-            return {
-                'view_post': [current_user, readers],
-                'change_post': [current_user],
-                'delete_post': [current_user, supervisors]
-            }

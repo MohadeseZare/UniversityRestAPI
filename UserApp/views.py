@@ -1,13 +1,14 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework import viewsets, permissions
 from rest_framework.generics import UpdateAPIView
-from .serializers import UserSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer
+from .models import User
 from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import update_session_auth_hash
 
-
+'''
 class ChangePasswordView(UpdateAPIView):
     """
     An endpoint for changing password.
@@ -41,17 +42,17 @@ class ChangePasswordView(UpdateAPIView):
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+'''
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = User.objects.all()
+    queryset =User.objects.all()
     serializer_class = UserSerializer
 
-    def get_object(self):
-        return self.request.user
+   # def get_object(self):
+    #    return self.request.user
 
-    def list(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+    #def list(self, request, *args, **kwargs):
+    #   return self.retrieve(request, *args, **kwargs)
     '''
     def get_permissions(self):
         """
@@ -62,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             permission_classes = [permissions.IsAdminUser]
         return [permission() for permission in permission_classes]
-'''
+
 
 
 
@@ -70,11 +71,11 @@ class UserViewSet(viewsets.ModelViewSet):
         nationalCode = request.POST['NationalCode']
         lastname = request.POST['LastName']
         firstname = request.POST['FirstName']
-        user = User.objects.create_user(nationalCode, '', nationalCode)
+        user = get_user_model().objects.create_user(nationalCode, '', nationalCode)
         user.last_name = lastname
         user.first_name = firstname
         user.save()
-
+'''
 
 
 
