@@ -13,6 +13,15 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         'Classroom',
     )
 
+    def get_queryset(self):
+        if self.request.user.groups.filter(name='teachergroup').exists():
+            return Exercise.objects.filter(Classroom__teacher=self.request.user)
+        elif self.request.user.groups.filter(name='studentgroup').exists():
+            return Exercise.objects.filter(Classroom__students=self.request.user)
+        else:
+            return Exercise.objects.all()
+
+
 
 
 

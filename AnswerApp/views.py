@@ -16,4 +16,12 @@ class AnswerViewSet(viewsets.ModelViewSet):
         'exercise',
     )
 
+    def get_queryset(self):
+        if self.request.user.groups.filter(name='teachergroup').exists():
+            return Answer.objects.filter(exercise__Classroom__teacher=self.request.user)
+        elif self.request.user.groups.filter(name='studentgroup').exists():
+            return Answer.objects.filter(student=self.request.user)
+        else:
+            return Answer.objects.all()
+
 

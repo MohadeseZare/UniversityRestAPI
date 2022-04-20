@@ -22,9 +22,7 @@ urlpatterns = [
 
     path('course/', include('CourseApp.urls')),
     path('exercise/', include('ExerciseApp.urls')),
-    path('answer/',include('AnswerApp.urls')),
-    #path('teacher/', include('TeacherApp.urls')),
-   # path('student/', include('StudentApp.urls')),
+    path('answer/', include('AnswerApp.urls')),
     path('news/', include('NewsApp.urls')),
     path('classroom/', include('ClassroomApp.urls')),
     path('user/', include('UserApp.urls')),

@@ -15,4 +15,12 @@ class NewsViewSet(viewsets.ModelViewSet):
         'Classroom',
     )
 
+    def get_queryset(self):
+        if self.request.user.groups.filter(name='teachergroup').exists():
+            return News.objects.filter(Classroom__teacher=self.request.user)
+        elif self.request.user.groups.filter(name='studentgroup').exists():
+            return News.objects.filter(Classroom__students=self.request.user)
+        else:
+            return News.objects.all()
+
 

@@ -43,11 +43,9 @@ INSTALLED_APPS = [
     'guardian',
     'rest_framework.authtoken',
     'rest_auth',
-    'TeacherApp',
     'CourseApp',
     'ExerciseApp',
     'NewsApp',
-    'StudentApp',
     'UserApp',
     'ClassroomApp',
     'AnswerApp'
