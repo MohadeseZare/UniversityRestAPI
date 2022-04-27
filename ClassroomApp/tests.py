@@ -1,3 +1,59 @@
-from django.test import TestCase
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+from .models import Classroom
+from CourseApp.models import Course
+from django.contrib.auth import get_user_model
+from .serializers import ClassroomSerializer
+from model_mommy import mommy
+from UserApp.models import User
 
-# Create your tests here.
+
+
+
+class ClassroomTests(APITestCase):
+
+    def setUp(self):
+        self.user = mommy.make(get_user_model(), is_staff=True, semat=User.semat_type.ADMIN)
+        self.client.force_login(self.user)
+
+        self.course = mommy.make(Course)
+        self.teacher = mommy.make(get_user_model(), semat=User.semat_type.TEACHER)
+        self.student = mommy.make(get_user_model(), semat=User.semat_type.STUDENT)
+        self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}
+
+
+    def test_classroom_list(self):
+        response = self.client.get(reverse('Classroom-list'), )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_create_classroom(self):
+        response = self.client.post(reverse('Classroom-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_update_classroom(self):
+        # sample old data
+        self.classroom = mommy.make(Classroom, course=self.course, teacher=self.teacher, students=[self.student,])
+        # Create new data for update
+        self.course = mommy.make(Course)
+        self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}
+        response = self.client.put(reverse('Classroom-detail', args=[self.classroom.id]), self.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_classroom(self):
+        # sample old data
+        self.classroom = mommy.make(Classroom, course=self.course, teacher=self.teacher, students=[self.student, ])
+
+        response = self.client.delete(reverse('Classroom-detail', args=[self.classroom.id]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+"""
+from guardian.shortcuts import assign_perm
+
+ assign_perm('view_classroom', self.user, self.classroom)
+        assign_perm('change_classroom', self.user, self.classroom)
+        assign_perm('delete_classroom', self.user, self.classroom)
+        assign_perm('add_classroom', self.user, self.classroom)
+        """

@@ -7,7 +7,7 @@ from django.urls import path
 from .views import UserViewSet
 
 router = DefaultRouter()
-router.register(r'', UserViewSet, basename='student')
+router.register(r'', UserViewSet, basename='user')
 #urlpatterns = router.urls
 
 urlpatterns = [
@@ -15,18 +15,3 @@ urlpatterns = [
 ]
 urlpatterns += router.urls
 
-'''
-from .views import UserViewSet, ChangePasswordView
-from rest_framework.routers import DefaultRouter
-from django.urls import path
-
-router = DefaultRouter()
-router.register(r'', UserViewSet, basename='student')
-#urlpatterns = router.urls
-
-urlpatterns = [
-    path('changepassword/', ChangePasswordView.as_view(), name='changepassword'),
-]
-
-urlpatterns +=  router.urls
-'''
