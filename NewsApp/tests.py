@@ -21,17 +21,35 @@ class NewsTests(APITestCase):
         self.classroom = mommy.make(Classroom, teacher=self.user)
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
 
-
-
+    def test_permisstions(self):
+        self.student_group = mommy.make(Group, name=User.Group_type.STUDENT)
+        self.user = mommy.make(get_user_model(), semat=User.semat_type.STUDENT, groups=[self.student_group])
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('news-list'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_news_list(self):
         response = self.client.get(reverse('news-list'), )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-
     def test_create_news(self):
         response = self.client.post(reverse('news-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_news_title_null(self):
+        self.data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text()}
+        response = self.client.post(reverse('news-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_news_body_null(self):
+        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': ''}
+        response = self.client.post(reverse('news-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_news_classroom_null(self):
+        self.data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text()}
+        response = self.client.post(reverse('news-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_news(self):
         # Create new data for update

@@ -17,6 +17,12 @@ class CreateUserTest(APITestCase):
         self.data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com', 'first_name': 'Mohadese',
         'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran', 'semat': User.semat_type.TEACHER, 'groups': [self.teacher_group.id]}
 
+    def test_permisstions(self):
+        self.user = mommy.make(get_user_model())
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('user-list'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_user_list(self):
         response = self.client.get(reverse('user-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)

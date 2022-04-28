@@ -21,7 +21,11 @@ class ClassroomTests(APITestCase):
         self.student = mommy.make(get_user_model(), semat=User.semat_type.STUDENT)
         self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}
 
-
+    def test_permisstions(self):
+        self.user = mommy.make(get_user_model())
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('Classroom-list'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_classroom_list(self):
         response = self.client.get(reverse('Classroom-list'), )
@@ -31,6 +35,21 @@ class ClassroomTests(APITestCase):
     def test_create_classroom(self):
         response = self.client.post(reverse('Classroom-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_classroom_teacher_null(self):
+        self.data = {'teacher': '', 'students': [self.student.id], 'course': self.course.id}
+        response = self.client.post(reverse('Classroom-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_classroom_students_null(self):
+        self.data = {'teacher': '', 'students': [], 'course': self.course.id}
+        response = self.client.post(reverse('Classroom-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_classroom_course_null(self):
+        self.data = {'teacher': '', 'students': [self.student.id], 'course': ''}
+        response = self.client.post(reverse('Classroom-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_classroom(self):
         # sample old data

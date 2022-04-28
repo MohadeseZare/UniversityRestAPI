@@ -15,6 +15,12 @@ class CourseTests(APITestCase):
         self.client.force_login(self.user)
         self.data = {'Title': the_fake.text()}
 
+    def test_permisstions(self):
+        self.user = mommy.make(get_user_model())
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('course-list'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_can_read_course_list(self):
         response = self.client.get(reverse('course-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -22,6 +28,17 @@ class CourseTests(APITestCase):
     def test_create_course(self):
         response = self.client.post(reverse('course-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_course_title_null(self):
+        self.data = {'Title': ''}
+        response = self.client.post(reverse('course-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_course_title_unique(self):
+        old_course = Course.objects.create(Title='Math')
+        self.data = {'Title': 'Math'}
+        response = self.client.post(reverse('course-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_course(self):
         old_course = Course.objects.create(Title=the_fake.text())

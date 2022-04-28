@@ -23,8 +23,12 @@ class ExerciseTests(APITestCase):
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
                       'expiredate': the_fake.date_time()}
 
-
-
+    def test_permisstions(self):
+        self.student_group = mommy.make(Group, name=User.Group_type.STUDENT)
+        self.user = mommy.make(get_user_model(), semat=User.semat_type.STUDENT, groups=[self.student_group])
+        self.client.force_login(self.user)
+        response = self.client.post(reverse('exercise-list'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_exercise_list(self):
         response = self.client.get(reverse('exercise-list'), )
@@ -34,6 +38,30 @@ class ExerciseTests(APITestCase):
     def test_create_exercise(self):
         response = self.client.post(reverse('exercise-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_exercise_classroom_null(self):
+        self.data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text(),
+                     'expiredate': the_fake.date_time()}
+        response = self.client.post(reverse('exercise-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_exercise_title_null(self):
+        self.data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text(),
+                     'expiredate': the_fake.date_time()}
+        response = self.client.post(reverse('exercise-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_exercise_body_null(self):
+        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': '',
+                     'expiredate': the_fake.date_time()}
+        response = self.client.post(reverse('exercise-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_exercise_expiredate_null(self):
+        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
+                     'expiredate': ''}
+        response = self.client.post(reverse('exercise-list'), self.data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_exercise(self):
         # Create new data for update
