@@ -12,6 +12,7 @@ from faker import Faker
 
 the_fake = Faker()
 
+
 class AnswerTests(APITestCase):
 
     def setUp(self):
