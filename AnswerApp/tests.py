@@ -49,7 +49,7 @@ class AnswerTests(APITestCase):
         response = self.client.post(reverse('answer-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_answer_exercisetimeout(self):
+    def test_create_answer_exercise_timeout(self):
         self.exercise = mommy.make(Exercise, classroom=self.classroom, expiredate='2020-05-22T12:18:00Z')
         self.data = {'exercise': self.exercise.id, 'body': the_fake.text()}
         response = self.client.post(reverse('answer-list'), self.data)
