@@ -4,10 +4,9 @@ from rest_framework.test import APITestCase
 from .models import Classroom
 from CourseApp.models import Course
 from django.contrib.auth import get_user_model
-from .serializers import ClassroomSerializer
 from model_mommy import mommy
 from UserApp.models import User
-
+from guardian.shortcuts import assign_perm
 
 
 
@@ -23,6 +22,7 @@ class ClassroomTests(APITestCase):
         self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}
 
 
+
     def test_classroom_list(self):
         response = self.client.get(reverse('Classroom-list'), )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -34,7 +34,7 @@ class ClassroomTests(APITestCase):
 
     def test_update_classroom(self):
         # sample old data
-        self.classroom = mommy.make(Classroom, course=self.course, teacher=self.teacher, students=[self.student,])
+        self.classroom = mommy.make(Classroom, course=self.course, teacher=self.teacher, students=[self.student])
         # Create new data for update
         self.course = mommy.make(Course)
         self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}

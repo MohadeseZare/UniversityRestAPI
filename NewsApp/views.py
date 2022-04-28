@@ -4,6 +4,7 @@ from ExerciseApp.permissions import TeacherPermission
 from .models import News
 from .serializers import NewsSerializer
 from django_filters import rest_framework as filters
+from UserApp.models import User
 
 class NewsViewSet(viewsets.ModelViewSet):
 
@@ -12,14 +13,14 @@ class NewsViewSet(viewsets.ModelViewSet):
     serializer_class = NewsSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = (
-        'Classroom',
+        'classroom',
     )
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name='teachergroup').exists():
-            return News.objects.filter(Classroom__teacher=self.request.user)
-        elif self.request.user.groups.filter(name='studentgroup').exists():
-            return News.objects.filter(Classroom__students=self.request.user)
+        if self.request.user.groups.filter(name=User.Group_type.TEACHER).exists():
+            return News.objects.filter(classroom__teacher=self.request.user)
+        elif self.request.user.groups.filter(name=User.Group_type.STUDENT).exists():
+            return News.objects.filter(classroom__students=self.request.user)
         else:
             return News.objects.all()
 

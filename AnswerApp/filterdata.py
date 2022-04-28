@@ -7,4 +7,4 @@ class FilteredClassroomRelatedcurentsSudent(serializers.PrimaryKeyRelatedField):
         queryset = super(FilteredClassroomRelatedcurentsSudent, self).get_queryset()
         if not request or not queryset:
             return None
-        return queryset.filter(Classroom__students=request.user)
+        return queryset.filter(classroom__students=request.user)

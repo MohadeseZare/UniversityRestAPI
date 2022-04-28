@@ -6,7 +6,7 @@ from .filterdata import FilteredClassroomRelatedcurentteacher
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
-    Classroom = FilteredClassroomRelatedcurentteacher(queryset=Classroom.objects)
+    classroom = FilteredClassroomRelatedcurentteacher(queryset=Classroom.objects)
 
     class Meta:
         model = Exercise

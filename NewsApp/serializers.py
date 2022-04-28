@@ -5,7 +5,7 @@ from ExerciseApp.filterdata import FilteredClassroomRelatedcurentteacher
 from .models import News
 
 class NewsSerializer(serializers.ModelSerializer):
-    Classroom = FilteredClassroomRelatedcurentteacher(queryset=Classroom.objects)
+    classroom = FilteredClassroomRelatedcurentteacher(queryset=Classroom.objects)
     class Meta:
         model = News
         fields = '__all__'

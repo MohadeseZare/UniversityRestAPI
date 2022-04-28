@@ -3,7 +3,7 @@ from .permissions import AnswerPermission
 from .models import Answer
 from .serializers import AnswerSerSerializer
 from django_filters import rest_framework as filters
-
+from UserApp.models import User
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
@@ -17,9 +17,9 @@ class AnswerViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name='teachergroup').exists():
-            return Answer.objects.filter(exercise__Classroom__teacher=self.request.user)
-        elif self.request.user.groups.filter(name='studentgroup').exists():
+        if self.request.user.groups.filter(name=User.Group_type.TEACHER).exists():
+            return Answer.objects.filter(exercise__classroom__teacher=self.request.user)
+        elif self.request.user.groups.filter(name=User.Group_type.STUDENT).exists():
             return Answer.objects.filter(student=self.request.user)
         else:
             return Answer.objects.all()
