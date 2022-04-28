@@ -55,7 +55,7 @@ class AnswerTests(APITestCase):
         response = self.client.post(reverse('answer-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_answer_MorethanOneAnswer(self):
+    def test_create_answer_More_than_One_Answer(self):
         self.answer = Answer.objects.create(exercise=self.exercise, student=self.user, body=the_fake.text())
         self.data = {'exercise': self.exercise.id, 'body': the_fake.text()}
         response = self.client.post(reverse('answer-list'), self.data)
