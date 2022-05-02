@@ -20,12 +20,12 @@ from django.conf import settings
 
 urlpatterns = [
 
-    path('course/', include('CourseApp.urls')),
-    path('exercise/', include('ExerciseApp.urls')),
-    path('answer/', include('AnswerApp.urls')),
-    path('news/', include('NewsApp.urls')),
-    path('classroom/', include('ClassroomApp.urls')),
-    path('user/', include('UserApp.urls')),
+    path('course/', include('courseapp.urls')),
+    path('exercise/', include('exerciseapp.urls')),
+    path('answer/', include('answerapp.urls')),
+    path('news/', include('newsapp.urls')),
+    path('classroom/', include('classroomapp.urls')),
+    path('user/', include('userapp.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
 ]

@@ -44,12 +44,12 @@ INSTALLED_APPS = [
     'guardian',
     'rest_framework.authtoken',
     'rest_auth',
-    'CourseApp',
-    'ExerciseApp',
-    'NewsApp',
-    'UserApp',
-    'ClassroomApp',
-    'AnswerApp',
+    'courseapp',
+    'exerciseapp',
+    'newsapp',
+    'userapp',
+    'classroomapp',
+    'answerapp',
 ]
 
 MIDDLEWARE = [
@@ -66,8 +66,8 @@ ROOT_URLCONF = 'UniversityRestAPI.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'BACKEND': 'django.template.backends.django.DjangoTemplates'
+       # ,'DIRS': [BASE_DIR / 'templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -146,7 +146,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-AUTH_USER_MODEL ='UserApp.User'
+AUTH_USER_MODEL ='userapp.User'
 SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
