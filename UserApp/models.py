@@ -3,11 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
 
-    class Group_type(models.TextChoices):
+    class GroupType(models.TextChoices):
         TEACHER = 'teachergroup'
         STUDENT = 'studentgroup'
 
-    class semat_type(models.TextChoices):
+    class PostType(models.TextChoices):
         ADMIN = 'A', ('Admin')
         TEACHER = 'T', ('Teacher')
         STUDENT = 'S', ('Student')
@@ -15,12 +15,12 @@ class User(AbstractUser):
 
     nationalCode = models.IntegerField(blank=True, null=True)
     school_name = models.CharField(max_length=50, blank=True, null=True)
-    semat = models.CharField(blank=True, choices=semat_type.choices, max_length=8, null=True)
+    post = models.CharField(blank=True, choices=PostType.choices, max_length=8, null=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     def __str__(self):
-        return "{}".format(self.email)
+        return self.email
 
 
 

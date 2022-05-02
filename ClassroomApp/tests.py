@@ -13,12 +13,12 @@ from guardian.shortcuts import assign_perm
 class ClassroomTests(APITestCase):
 
     def setUp(self):
-        self.user = mommy.make(get_user_model(), is_staff=True, semat=User.semat_type.ADMIN)
+        self.user = mommy.make(get_user_model(), is_staff=True, post=User.PostType.ADMIN)
         self.client.force_login(self.user)
 
         self.course = mommy.make(Course)
-        self.teacher = mommy.make(get_user_model(), semat=User.semat_type.TEACHER)
-        self.student = mommy.make(get_user_model(), semat=User.semat_type.STUDENT)
+        self.teacher = mommy.make(get_user_model(), post=User.PostType.TEACHER)
+        self.student = mommy.make(get_user_model(), post=User.PostType.STUDENT)
         self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}
 
     def test_permisstions(self):

@@ -16,9 +16,9 @@ class ExerciseViewSet(viewsets.ModelViewSet):
     )
 
     def get_queryset(self):
-        if self.request.user.groups.filter(name=User.Group_type.TEACHER).exists():
+        if self.request.user.groups.filter(name=User.GroupType.TEACHER).exists():
             return Exercise.objects.filter(classroom__teacher=self.request.user)
-        elif self.request.user.groups.filter(name=User.Group_type.STUDENT).exists():
+        elif self.request.user.groups.filter(name=User.GroupType.STUDENT).exists():
             return Exercise.objects.filter(classroom__students=self.request.user)
         else:
             return Exercise.objects.all()

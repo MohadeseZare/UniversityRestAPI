@@ -16,8 +16,8 @@ the_fake = Faker()
 class AnswerTests(APITestCase):
 
     def setUp(self):
-        self.student_group = mommy.make(Group, name=User.Group_type.STUDENT)
-        self.user = mommy.make(get_user_model(), semat=User.semat_type.STUDENT, groups=[self.student_group])
+        self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
+        self.user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
         self.client.force_login(self.user)
 
         self.classroom = mommy.make(Classroom, students=[self.user])
@@ -25,8 +25,8 @@ class AnswerTests(APITestCase):
         self.data = {'exercise': self.exercise.id, 'body': the_fake.text()}
 
     def test_permisstions(self):
-        self.teacher_group = mommy.make(Group, name=User.Group_type.TEACHER)
-        self.user = mommy.make(get_user_model(), semat=User.semat_type.TEACHER, groups=[self.teacher_group])
+        self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
+        self.user = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group])
         self.client.force_login(self.user)
         response = self.client.post(reverse('answer-list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

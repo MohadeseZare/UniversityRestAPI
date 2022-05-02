@@ -5,8 +5,8 @@ from UserApp.models import User
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
-    teacher = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(semat='T'))
-    students = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(semat='S'), many=True)
+    teacher = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(post='T'))
+    students = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(post='S'), many=True)
     class Meta:
         model = Classroom
         fields = '__all__'
