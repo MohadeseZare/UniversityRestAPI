@@ -30,6 +30,7 @@ class AnswerTests(APITestCase):
         self.client.force_login(self.user)
         response = self.client.post(reverse('answer-list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertNotIn(self.student_group, self.user.groups.all())
 
     def test_answer_list(self):
         response = self.client.get(reverse('answer-list'), )

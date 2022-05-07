@@ -24,6 +24,7 @@ class ClassroomTests(APITestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse('Classroom-list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(self.user.is_staff)
 
     def test_classroom_list(self):
         response = self.client.get(reverse('Classroom-list'), )
@@ -63,13 +64,3 @@ class ClassroomTests(APITestCase):
 
         response = self.client.delete(reverse('Classroom-detail', args=[self.classroom.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-
-"""
-from guardian.shortcuts import assign_perm
-
- assign_perm('view_classroom', self.user, self.classroom)
-        assign_perm('change_classroom', self.user, self.classroom)
-        assign_perm('delete_classroom', self.user, self.classroom)
-        assign_perm('add_classroom', self.user, self.classroom)
-        """

@@ -25,10 +25,12 @@ class CreateUserTest(APITestCase):
         self.client.force_login(self.user)
         response = self.client.get(reverse('user-list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(self.user.is_staff)
 
     def test_user_list(self):
         response = self.client.get(reverse('user-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
     def test_create_teacher(self):
         response = self.client.post(reverse('user-list'), self.data)

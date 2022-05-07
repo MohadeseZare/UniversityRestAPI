@@ -30,6 +30,7 @@ class ExerciseTests(APITestCase):
         self.client.force_login(self.user)
         response = self.client.post(reverse('exercise-list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertNotIn(self.teacher_group, self.user.groups.all())
 
     def test_exercise_list(self):
         response = self.client.get(reverse('exercise-list'), )
