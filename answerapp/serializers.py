@@ -3,12 +3,15 @@ from rest_framework import serializers
 from .models import Answer, Exercise
 from django import utils
 from rest_framework.serializers import ValidationError
-from .filterdata import FilteredClassroomRelatedCurentsSudent
 
 
 class AnswerSerSerializer(serializers.ModelSerializer):
     student = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    exercise = FilteredClassroomRelatedCurentsSudent(queryset=Exercise.objects)
+
+    def __init__(self, *args, **kwargs):
+        super(AnswerSerSerializer, self).__init__(*args, **kwargs)
+        request_user = self.context['request'].user
+        self.fields['exercise'].queryset = Exercise.objects.filter(classroom__students=request_user)
 
     class Meta:
         model = Answer
@@ -24,4 +27,3 @@ class AnswerSerSerializer(serializers.ModelSerializer):
         if answers.filter(exercise=exercise) and self.context['request'].method == 'POST':
             raise ValidationError("you cant add Two Answer for One exercise.")
         return attrs
-

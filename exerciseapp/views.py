@@ -15,6 +15,11 @@ class ExerciseViewSet(viewsets.ModelViewSet):
         'classroom',
     )
 
+    def get_serializer_context(self):
+        context = super(ExerciseViewSet, self).get_serializer_context()
+        context['current_user'] = self.request.user
+        return context
+
     def get_queryset(self):
         if self.request.user.groups.filter(name=User.GroupType.TEACHER).exists():
             return Exercise.objects.filter(classroom__teacher=self.request.user)

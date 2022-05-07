@@ -6,7 +6,7 @@ from courseapp.models import Course
 from django.contrib.auth import get_user_model
 from model_mommy import mommy
 from userapp.models import User
-from guardian.shortcuts import assign_perm
+
 
 
 

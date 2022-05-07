@@ -1,14 +1,16 @@
 from rest_framework import serializers
+
 from .models import Exercise
 from classroomapp.models import Classroom
-from .filterdata import FilteredClassroomRelatedCurentTeacher
-
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
-    classroom = FilteredClassroomRelatedCurentTeacher(queryset=Classroom.objects)
+
+    def __init__(self, *args, **kwargs):
+        super(ExerciseSerializer, self).__init__(*args, **kwargs)
+        request_user = self.context['request'].user
+        self.fields['classroom'].queryset = Classroom.objects.filter(teacher=request_user)
 
     class Meta:
         model = Exercise
         fields = '__all__'
-
