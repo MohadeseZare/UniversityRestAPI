@@ -8,16 +8,19 @@ from django.contrib.auth import get_user_model
 
 from guardian.shortcuts import assign_perm
 
+
 class CreateUserTest(APITestCase):
     def setUp(self):
         self.user = mommy.make(get_user_model(), is_staff=True, post=User.PostType.ADMIN)
         self.client.force_login(self.user)
 
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
-        self.data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com', 'first_name': 'Mohadese',
-        'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran', 'post': User.PostType.TEACHER, 'groups': [self.teacher_group.id]}
+        self.data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com',
+                     'first_name': 'Mohadese',
+                     'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran',
+                     'post': User.PostType.TEACHER, 'groups': [self.teacher_group.id]}
 
-    def test_permisstions(self):
+    def test_user_access(self):
         self.user = mommy.make(get_user_model())
         self.client.force_login(self.user)
         response = self.client.get(reverse('user-list'))
@@ -35,8 +38,10 @@ class CreateUserTest(APITestCase):
         # sample old data
         self.teacher = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group, ])
         # sample new data for update
-        self.data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com', 'first_name': 'Mohadese',
-        'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran', 'post': User.PostType.TEACHER, 'groups': [self.teacher_group.id]}
+        self.data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com',
+                     'first_name': 'Mohadese',
+                     'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran',
+                     'post': User.PostType.TEACHER, 'groups': [self.teacher_group.id]}
         response = self.client.put(reverse('user-detail', args=[self.teacher.id]), self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -46,8 +51,3 @@ class CreateUserTest(APITestCase):
 
         response = self.client.delete(reverse('user-detail', args=[self.teacher.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-
-
-
-

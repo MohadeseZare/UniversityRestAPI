@@ -8,8 +8,6 @@ from model_mommy import mommy
 from userapp.models import User
 
 
-
-
 class ClassroomTests(APITestCase):
 
     def setUp(self):
@@ -21,7 +19,7 @@ class ClassroomTests(APITestCase):
         self.student = mommy.make(get_user_model(), post=User.PostType.STUDENT)
         self.data = {'teacher': self.teacher.id, 'students': [self.student.id], 'course': self.course.id}
 
-    def test_permisstions(self):
+    def test_user_access(self):
         self.user = mommy.make(get_user_model())
         self.client.force_login(self.user)
         response = self.client.get(reverse('Classroom-list'))
@@ -30,7 +28,6 @@ class ClassroomTests(APITestCase):
     def test_classroom_list(self):
         response = self.client.get(reverse('Classroom-list'), )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
     def test_create_classroom(self):
         response = self.client.post(reverse('Classroom-list'), self.data)

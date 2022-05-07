@@ -24,7 +24,7 @@ class AnswerTests(APITestCase):
         self.exercise = mommy.make(Exercise, classroom=self.classroom, expiredate='2022-05-22T12:18:00Z')
         self.data = {'exercise': self.exercise.id, 'body': the_fake.text()}
 
-    def test_permisstions(self):
+    def test_user_access(self):
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
         self.user = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group])
         self.client.force_login(self.user)

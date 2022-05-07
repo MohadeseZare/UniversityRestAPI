@@ -11,6 +11,7 @@ from faker import Faker
 
 the_fake = Faker()
 
+
 class ExerciseTests(APITestCase):
 
     def setUp(self):
@@ -21,9 +22,9 @@ class ExerciseTests(APITestCase):
         self.classroom = mommy.make(Classroom, teacher=self.user)
 
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
-                      'expiredate': the_fake.date_time()}
+                     'expiredate': the_fake.date_time()}
 
-    def test_permisstions(self):
+    def test_user_access(self):
         self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
         self.user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
         self.client.force_login(self.user)
@@ -33,7 +34,6 @@ class ExerciseTests(APITestCase):
     def test_exercise_list(self):
         response = self.client.get(reverse('exercise-list'), )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
     def test_create_exercise(self):
         response = self.client.post(reverse('exercise-list'), self.data)
@@ -57,7 +57,7 @@ class ExerciseTests(APITestCase):
         response = self.client.post(reverse('exercise-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_exercise_expiredate_null(self):
+    def test_create_exercise_expired_null(self):
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
                      'expiredate': ''}
         response = self.client.post(reverse('exercise-list'), self.data)
@@ -67,7 +67,7 @@ class ExerciseTests(APITestCase):
         # Create new data for update
         self.exercise = mommy.make(Exercise, classroom=self.classroom)
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
-                       'expiredate': the_fake.date_time()}
+                     'expiredate': the_fake.date_time()}
         response = self.client.put(reverse('exercise-detail', args=[self.exercise.id]), self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

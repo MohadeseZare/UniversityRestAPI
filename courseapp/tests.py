@@ -8,6 +8,7 @@ from faker import Faker
 
 the_fake = Faker()
 
+
 class CourseTests(APITestCase):
 
     def setUp(self):
@@ -15,7 +16,7 @@ class CourseTests(APITestCase):
         self.client.force_login(self.user)
         self.data = {'title': the_fake.text()}
 
-    def test_permisstions(self):
+    def test_user_access(self):
         self.user = mommy.make(get_user_model())
         self.client.force_login(self.user)
         response = self.client.get(reverse('course-list'))
@@ -30,7 +31,7 @@ class CourseTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_course_title_null(self):
-        self.data = {'Title': ''}
+        self.data = {'title': ''}
         response = self.client.post(reverse('course-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -49,7 +50,3 @@ class CourseTests(APITestCase):
         old_course = Course.objects.create(title=the_fake.text())
         response = self.client.delete(reverse('course-detail', args=[old_course.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-
-
-

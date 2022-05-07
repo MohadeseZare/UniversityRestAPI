@@ -11,6 +11,7 @@ from faker import Faker
 
 the_fake = Faker()
 
+
 class NewsTests(APITestCase):
 
     def setUp(self):
@@ -21,7 +22,7 @@ class NewsTests(APITestCase):
         self.classroom = mommy.make(Classroom, teacher=self.user)
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
 
-    def test_permisstions(self):
+    def test_user_access(self):
         self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
         self.user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
         self.client.force_login(self.user)
@@ -54,7 +55,7 @@ class NewsTests(APITestCase):
     def test_update_news(self):
         # Create new data for update
         self.news = mommy.make(News, classroom=self.classroom)
-        self.data ={'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
+        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
         response = self.client.put(reverse('news-detail', args=[self.news.id]), self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
