@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from guardian.shortcuts import assign_perm
 
 
-class CreateUserTest(APITestCase):
+class UserTest(APITestCase):
     def setUp(self):
         self.user = mommy.make(get_user_model(), is_staff=True, post=User.PostType.ADMIN)
         self.client.force_login(self.user)
@@ -30,7 +30,6 @@ class CreateUserTest(APITestCase):
     def test_user_list(self):
         response = self.client.get(reverse('user-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
 
     def test_create_teacher(self):
         response = self.client.post(reverse('user-list'), self.data)

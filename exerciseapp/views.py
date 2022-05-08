@@ -5,20 +5,15 @@ from django_filters import rest_framework as filters
 from .permissions import TeacherPermission
 from userapp.models import User
 
+
 class ExerciseViewSet(viewsets.ModelViewSet):
-    permission_classes = [TeacherPermission,]
+    permission_classes = [TeacherPermission, ]
     queryset = Exercise.objects.all()
     serializer_class = ExerciseSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-
     filterset_fields = (
         'classroom',
     )
-
-    def get_serializer_context(self):
-        context = super(ExerciseViewSet, self).get_serializer_context()
-        context['current_user'] = self.request.user
-        return context
 
     def get_queryset(self):
         if self.request.user.groups.filter(name=User.GroupType.TEACHER).exists():
@@ -27,8 +22,3 @@ class ExerciseViewSet(viewsets.ModelViewSet):
             return Exercise.objects.filter(classroom__students=self.request.user)
         else:
             return Exercise.objects.all()
-
-
-
-
-

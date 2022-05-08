@@ -1,17 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class User(AbstractUser):
 
+class User(AbstractUser):
     class GroupType(models.TextChoices):
-        TEACHER = 'teachergroup'
-        STUDENT = 'studentgroup'
+        TEACHER = 'teacher_group'
+        STUDENT = 'student_group'
 
     class PostType(models.TextChoices):
-        ADMIN = 'A', ('Admin')
-        TEACHER = 'T', ('Teacher')
-        STUDENT = 'S', ('Student')
-
+        ADMIN = 'A', 'Admin'
+        TEACHER = 'T', 'Teacher'
+        STUDENT = 'S', 'Student'
 
     nationalCode = models.IntegerField(blank=True, null=True)
     school_name = models.CharField(max_length=50, blank=True, null=True)
@@ -21,6 +20,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-
-
-

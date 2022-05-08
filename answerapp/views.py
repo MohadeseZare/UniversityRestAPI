@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from .permissions import AnswerPermission
 from .models import Answer
-from .serializers import AnswerSerSerializer
+from .serializers import AnswerSerializer
 from django_filters import rest_framework as filters
 from userapp.models import User
 
@@ -9,7 +9,7 @@ from userapp.models import User
 class AnswerViewSet(viewsets.ModelViewSet):
     permission_classes = [AnswerPermission,]
     queryset = Answer.objects.all()
-    serializer_class = AnswerSerSerializer
+    serializer_class = AnswerSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = (
         'student',

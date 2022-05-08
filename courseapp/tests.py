@@ -9,7 +9,7 @@ from faker import Faker
 the_fake = Faker()
 
 
-class CourseTests(APITestCase):
+class CourseTest(APITestCase):
 
     def setUp(self):
         self.user = mommy.make(get_user_model(), is_staff=True)

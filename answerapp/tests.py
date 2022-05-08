@@ -13,7 +13,7 @@ from faker import Faker
 the_fake = Faker()
 
 
-class AnswerTests(APITestCase):
+class AnswerTest(APITestCase):
 
     def setUp(self):
         self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)

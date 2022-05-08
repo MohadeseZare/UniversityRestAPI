@@ -12,7 +12,7 @@ from faker import Faker
 the_fake = Faker()
 
 
-class ExerciseTests(APITestCase):
+class ExerciseTest(APITestCase):
 
     def setUp(self):
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
@@ -22,7 +22,7 @@ class ExerciseTests(APITestCase):
         self.classroom = mommy.make(Classroom, teacher=self.user)
 
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
-                     'expiredate': the_fake.date_time()}
+                     'expire_date': the_fake.date_time()}
 
     def test_user_access(self):
         self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
@@ -42,25 +42,25 @@ class ExerciseTests(APITestCase):
 
     def test_create_exercise_classroom_null(self):
         self.data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text(),
-                     'expiredate': the_fake.date_time()}
+                     'expire_date': the_fake.date_time()}
         response = self.client.post(reverse('exercise-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_exercise_title_null(self):
         self.data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text(),
-                     'expiredate': the_fake.date_time()}
+                     'expire_date': the_fake.date_time()}
         response = self.client.post(reverse('exercise-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_exercise_body_null(self):
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': '',
-                     'expiredate': the_fake.date_time()}
+                     'expire_date': the_fake.date_time()}
         response = self.client.post(reverse('exercise-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_exercise_expired_null(self):
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
-                     'expiredate': ''}
+                     'expire_date': ''}
         response = self.client.post(reverse('exercise-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -68,7 +68,7 @@ class ExerciseTests(APITestCase):
         # Create new data for update
         self.exercise = mommy.make(Exercise, classroom=self.classroom)
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
-                     'expiredate': the_fake.date_time()}
+                     'expire_date': the_fake.date_time()}
         response = self.client.put(reverse('exercise-detail', args=[self.exercise.id]), self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
