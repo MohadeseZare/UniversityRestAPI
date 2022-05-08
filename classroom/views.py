@@ -3,6 +3,7 @@ from .models import Classroom
 from .serializers import ClassroomSerializer
 from django_filters import rest_framework as filters
 
+
 class ClassroomViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
     queryset = Classroom.objects.all()
@@ -12,6 +13,3 @@ class ClassroomViewSet(viewsets.ModelViewSet):
         'teacher',
         'students',
     )
-
-
-

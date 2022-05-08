@@ -1,5 +1,5 @@
 from django.urls import reverse
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.test import APITestCase
 from .models import News
 from classroom.models import Classroom
@@ -15,6 +15,7 @@ the_fake = Faker()
 class NewsTest(APITestCase):
 
     def setUp(self):
+        self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
         self.user = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group])
         self.client.force_login(self.user)
@@ -23,12 +24,58 @@ class NewsTest(APITestCase):
         self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
 
     def test_user_access(self):
-        self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
-        self.user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
-        self.client.force_login(self.user)
+        user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
+        self.client.force_login(user)
         response = self.client.post(reverse('news-list'))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertNotIn(self.teacher_group, self.user.groups.all())
+        self.assertNotIn(self.teacher_group, user.groups.all())
+
+    def test_user_access_safe_methods(self):
+        user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
+        self.client.force_login(user)
+        response = self.client.get(reverse('news-list'), )
+        request = response.wsgi_request
+        self.assertIn(request.method, permissions.SAFE_METHODS)
+
+    def test_news_list_get_queryset_superuser(self):
+        mommy.make(News, classroom=self.classroom)
+        superuser = mommy.make(get_user_model(), is_staff=True)
+        self.client.force_login(superuser)
+        response = self.client.get(reverse('news-list'), )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        json = response.json()
+        self.assertEqual(len(json), 1)
+
+    def create_sample_news_for_teacher(self):
+        teacher_user = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group])
+        classroom = mommy.make(Classroom, students=[self.user], teacher=teacher_user)
+        mommy.make(News, classroom=classroom)
+        self.client.force_login(teacher_user)
+
+    def test_news_get_queryset_teacher(self):
+        # teacher one
+        self.create_sample_news_for_teacher()
+        # teacher Two
+        self.create_sample_news_for_teacher()
+
+        response = self.client.get(reverse('news-list'), )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        json = response.json()
+        self.assertEqual(len(json), 1)
+
+    def create_sample_news_for_student(self):
+        mommy.make(News, classroom=self.classroom)
+        student_user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
+        classroom = mommy.make(Classroom, students=[student_user])
+        mommy.make(News, classroom=classroom)
+        self.client.force_login(student_user)
+
+    def test_news_get_queryset_student(self):
+        self.create_sample_news_for_student()
+        response = self.client.get(reverse('news-list'), )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        json = response.json()
+        self.assertEqual(len(json), 1)
 
     def test_news_list(self):
         response = self.client.get(reverse('news-list'), )
@@ -39,28 +86,28 @@ class NewsTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_news_title_null(self):
-        self.data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text()}
-        response = self.client.post(reverse('news-list'), self.data)
+        data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text()}
+        response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_news_body_null(self):
-        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': ''}
-        response = self.client.post(reverse('news-list'), self.data)
+        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': ''}
+        response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_news_classroom_null(self):
-        self.data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text()}
-        response = self.client.post(reverse('news-list'), self.data)
+        data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text()}
+        response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_news(self):
         # Create new data for update
-        self.news = mommy.make(News, classroom=self.classroom)
-        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
-        response = self.client.put(reverse('news-detail', args=[self.news.id]), self.data)
+        news = mommy.make(News, classroom=self.classroom)
+        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
+        response = self.client.put(reverse('news-detail', args=[news.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_news(self):
-        self.news = mommy.make(News, classroom=self.classroom)
-        response = self.client.delete(reverse('news-detail', args=[self.news.id]))
+        news = mommy.make(News, classroom=self.classroom)
+        response = self.client.delete(reverse('news-detail', args=[news.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

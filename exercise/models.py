@@ -1,8 +1,8 @@
 import datetime
 
-
 from django.db import models
 from classroom.models import Classroom
+
 
 class Exercise(models.Model):
     title = models.CharField(max_length=255)
