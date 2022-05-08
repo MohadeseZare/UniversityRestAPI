@@ -89,23 +89,27 @@ class AnswerTest(APITestCase):
         data = {'exercise': '', 'body': the_fake.text()}
         response = self.client.post(reverse('answer-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['exercise'][0]), 'This field may not be null.')
 
     def test_create_answer_body_null(self):
         data = {'exercise': self.exercise.id, 'body': ''}
         response = self.client.post(reverse('answer-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['body'][0]), 'This field may not be blank.')
 
     def test_create_answer_exercise_timeout(self):
         exercise = mommy.make(Exercise, classroom=self.classroom, expire_date='2020-05-22T12:18:00Z')
         data = {'exercise': exercise.id, 'body': the_fake.text()}
         response = self.client.post(reverse('answer-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['non_field_errors'][0]), 'This exercise timeout.')
 
     def test_create_answer_more_than_one_answer(self):
         Answer.objects.create(exercise=self.exercise, student=self.user, body=the_fake.text())
         data = {'exercise': self.exercise.id, 'body': the_fake.text()}
         response = self.client.post(reverse('answer-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['non_field_errors'][0]), 'you cant add Two Answer for One exercise.')
 
     def test_update_answer(self):
         # Create new data for update

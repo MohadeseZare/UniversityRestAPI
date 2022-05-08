@@ -41,21 +41,38 @@ class CourseTest(APITestCase):
         data = {'title': ''}
         response = self.client.post(reverse('course-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['title'][0]), 'This field may not be blank.')
 
     def test_create_course_title_unique(self):
         Course.objects.create(title='Math')
         data = {'title': 'Math'}
         response = self.client.post(reverse('course-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['title'][0]), 'course with this title already exists.')
 
     def test_update_course(self):
         fake_title = the_fake.text()
         old_course = Course.objects.create(title=fake_title)
         response = self.client.put(reverse('course-detail', args=[old_course.id]), self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(old_course.title, fake_title)
+
+        # checked new title with title
+        course = Course.objects.get(id=old_course.id)
+        self.assertEqual(course.title, 'test')
+
+        # checked Old title not exists
+        course = Course.objects.filter(title=old_course.title)
+        self.assertEqual(course.count(), 0)
+
+        # checked new title exists
+        course = Course.objects.filter(title='test')
+        self.assertEqual(course.count(), 1)
 
     def test_delete_course(self):
         old_course = Course.objects.create(title=the_fake.text())
         response = self.client.delete(reverse('course-detail', args=[old_course.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # checked not exists
+        course = Course.objects.filter(title=old_course.title)
+        self.assertEqual(course.count(), 0)
+
