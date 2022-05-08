@@ -41,12 +41,12 @@ INSTALLED_APPS = [
     'guardian',
     'rest_framework.authtoken',
     'rest_auth',
-    'courseapp',
-    'exerciseapp',
-    'newsapp',
-    'userapp',
-    'classroomapp',
-    'answerapp',
+    'course',
+    'exercise',
+    'news',
+    'user',
+    'classroom',
+    'answer',
 ]
 
 MIDDLEWARE = [
@@ -137,7 +137,7 @@ AUTHENTICATION_BACKENDS = [
     'guardian.backends.ObjectPermissionBackend',
 ]
 
-AUTH_USER_MODEL = 'userapp.User'
+AUTH_USER_MODEL = 'user.User'
 SILENCED_SYSTEM_CHECKS = ["auth.W004"]
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
