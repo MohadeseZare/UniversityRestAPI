@@ -5,18 +5,20 @@ from rest_framework.test import APITestCase
 from .models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
+from faker import Faker
 
 
 class UserTest(APITestCase):
     def setUp(self):
         super().setUpClass()
+        self.the_fake = Faker()
         self.user = mommy.make(get_user_model(), is_staff=True, post=User.PostType.ADMIN)
         self.client.force_login(self.user)
 
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
-        self.data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com',
-                     'first_name': 'Mohadese',
-                     'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran',
+        self.data = {'username': '4450033841', 'password': '123', 'email': self.the_fake.email(),
+                     'first_name': self.the_fake.first_name(),
+                     'last_name': self.the_fake.last_name(), 'nationalCode': 4450033841, 'school_name': 'Iran',
                      'post': User.PostType.TEACHER, 'groups': [self.teacher_group.id]}
 
     def test_login_superuser(self):
@@ -70,9 +72,9 @@ class UserTest(APITestCase):
         # sample old data
         teacher = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group, ])
         # sample new data for update
-        data = {'username': '4450033841', 'password': '123', 'email': 'mohadese.zare69@gmail.com',
-                'first_name': 'Mohadese',
-                'last_name': 'Zare', 'nationalCode': 4450033841, 'school_name': 'Iran',
+        data = {'username': '4450033841', 'password': '123', 'email': self.the_fake.email(),
+                'first_name': self.the_fake.first_name(),
+                'last_name': self.the_fake.last_name(), 'nationalCode': 4450033841, 'school_name': 'Iran',
                 'post': User.PostType.TEACHER, 'groups': [self.teacher_group.id]}
         response = self.client.put(reverse('user-detail', args=[teacher.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
