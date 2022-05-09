@@ -84,6 +84,10 @@ class AnswerTest(APITestCase):
     def test_create_answer(self):
         response = self.client.post(reverse('answer-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # checked new body with body
+        answer = Answer.objects.last()
+        self.assertEqual(answer.exercise, self.exercise)
+        self.assertEqual(answer.student, self.user)
 
     def test_create_answer_exercise_null(self):
         data = {'exercise': '', 'body': the_fake.text()}
@@ -112,13 +116,24 @@ class AnswerTest(APITestCase):
         self.assertEqual(str(response.data['non_field_errors'][0]), 'you cant add Two Answer for One exercise.')
 
     def test_update_answer(self):
+        fake_body = the_fake.text()
         # Create new data for update
         answer = Answer.objects.create(exercise=self.exercise, student=self.user, body=the_fake.text())
-        data = {'exercise': self.exercise.id, 'body': the_fake.text()}
+        data = {'exercise': self.exercise.id, 'body': fake_body}
         response = self.client.put(reverse('answer-detail', args=[answer.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # checked new body with body
+        answer = Answer.objects.get(id=answer.id)
+        self.assertEqual(answer.body, fake_body)
+        self.assertEqual(answer.exercise, self.exercise)
+        self.assertEqual(answer.student, self.user)
 
     def test_delete_answer(self):
         answer = Answer.objects.create(exercise=self.exercise, student=self.user, body=the_fake.text())
         response = self.client.delete(reverse('answer-detail', args=[answer.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # checked not exists
+        answer = Answer.objects.filter(id=answer.id)
+        self.assertEqual(answer.count(), 0)

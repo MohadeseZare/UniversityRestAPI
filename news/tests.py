@@ -78,36 +78,53 @@ class NewsTest(APITestCase):
         self.assertEqual(len(json), 1)
 
     def test_news_list(self):
+        mommy.make(News, classroom=self.classroom)
         response = self.client.get(reverse('news-list'), )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        json = response.json()
+        self.assertEqual(len(json), 1)
 
     def test_create_news(self):
         response = self.client.post(reverse('news-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # checked in database with id
+        exercise = News.objects.last()
+        self.assertEqual(exercise.classroom, self.classroom)
 
     def test_create_news_title_null(self):
         data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text()}
         response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['title'][0]), 'This field may not be blank.')
 
     def test_create_news_body_null(self):
         data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': ''}
         response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['body'][0]), 'This field may not be blank.')
 
     def test_create_news_classroom_null(self):
         data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text()}
         response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(response.data['classroom'][0]), 'This field may not be null.')
 
     def test_update_news(self):
         # Create new data for update
         news = mommy.make(News, classroom=self.classroom)
-        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
+        fake_body = the_fake.text()
+        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': fake_body}
         response = self.client.put(reverse('news-detail', args=[news.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # checked in database with id
+        exercise = News.objects.get(id=news.id)
+        self.assertEqual(exercise.classroom, self.classroom)
+        self.assertEqual(exercise.body, fake_body)
 
     def test_delete_news(self):
         news = mommy.make(News, classroom=self.classroom)
         response = self.client.delete(reverse('news-detail', args=[news.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # checked not exists
+        exercise = News.objects.filter(id=news.id)
+        self.assertEqual(exercise.count(), 0)

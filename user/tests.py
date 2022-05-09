@@ -26,12 +26,17 @@ class UserTest(APITestCase):
         self.assertFalse(user.is_staff)
 
     def test_user_list(self):
+        mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group, ])
         response = self.client.get(reverse('user-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        json = response.json()
+        self.assertEqual(len(json), 3)
 
     def test_create_teacher(self):
         response = self.client.post(reverse('user-list'), self.data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        user = User.objects.last()
+        self.assertEqual(user.username, '4450033841')
 
     def test_update_user(self):
         # sample old data
@@ -44,9 +49,15 @@ class UserTest(APITestCase):
         response = self.client.put(reverse('user-detail', args=[teacher.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        user = User.objects.get(id=teacher.id)
+        self.assertEqual(user.username, '4450033841')
+
     def test_delete_user(self):
         # sample old data
         teacher = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group, ])
 
         response = self.client.delete(reverse('user-detail', args=[teacher.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        # checked not exists
+        user = User.objects.filter(id=teacher.id)
+        self.assertEqual(user.count(), 0)
