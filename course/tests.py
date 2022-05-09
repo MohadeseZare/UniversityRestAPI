@@ -6,12 +6,13 @@ from model_mommy import mommy
 from django.contrib.auth import get_user_model
 from faker import Faker
 
-the_fake = Faker()
+
 
 
 class CourseTest(APITestCase):
 
     def setUp(self):
+        self.the_fake = Faker()
         self.user = mommy.make(get_user_model(), is_staff=True)
         self.client.force_login(self.user)
         self.data = {'title': 'test'}
@@ -24,7 +25,7 @@ class CourseTest(APITestCase):
         self.assertFalse(user.is_staff)
 
     def test_course_list(self):
-        Course.objects.create(title=the_fake.text())
+        Course.objects.create(title=self.the_fake.text())
         response = self.client.get(reverse('course-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         json = response.json()
@@ -51,7 +52,7 @@ class CourseTest(APITestCase):
         self.assertEqual(str(response.data['title'][0]), 'course with this title already exists.')
 
     def test_update_course(self):
-        fake_title = the_fake.text()
+        fake_title = self.the_fake.text()
         old_course = Course.objects.create(title=fake_title)
         response = self.client.put(reverse('course-detail', args=[old_course.id]), self.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -69,7 +70,7 @@ class CourseTest(APITestCase):
         self.assertEqual(course.count(), 1)
 
     def test_delete_course(self):
-        old_course = Course.objects.create(title=the_fake.text())
+        old_course = Course.objects.create(title=self.the_fake.text())
         response = self.client.delete(reverse('course-detail', args=[old_course.id]))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # checked not exists

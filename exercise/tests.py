@@ -9,12 +9,11 @@ from django.contrib.auth.models import Group
 from user.models import User
 from faker import Faker
 
-the_fake = Faker()
-
 
 class ExerciseTest(APITestCase):
 
     def setUp(self):
+        self.the_fake = Faker()
         self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
         self.user = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group])
@@ -22,8 +21,8 @@ class ExerciseTest(APITestCase):
 
         self.classroom = mommy.make(Classroom, teacher=self.user)
 
-        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
-                     'expire_date': the_fake.date_time()}
+        self.data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': self.the_fake.text(),
+                     'expire_date': self.the_fake.date_time()}
 
     def test_user_access(self):
         user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
@@ -95,28 +94,28 @@ class ExerciseTest(APITestCase):
         self.assertEqual(exercise.classroom, self.classroom)
 
     def test_create_exercise_classroom_null(self):
-        data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text(),
-                'expire_date': the_fake.date_time()}
+        data = {'classroom': '', 'title': self.the_fake.text(), 'body': self.the_fake.text(),
+                'expire_date': self.the_fake.date_time()}
         response = self.client.post(reverse('exercise-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['classroom'][0]), 'This field may not be null.')
 
     def test_create_exercise_title_null(self):
-        data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text(),
-                'expire_date': the_fake.date_time()}
+        data = {'classroom': self.classroom.id, 'title': '', 'body': self.the_fake.text(),
+                'expire_date': self.the_fake.date_time()}
         response = self.client.post(reverse('exercise-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['title'][0]), 'This field may not be blank.')
 
     def test_create_exercise_body_null(self):
-        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': '',
-                'expire_date': the_fake.date_time()}
+        data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': '',
+                'expire_date': self.the_fake.date_time()}
         response = self.client.post(reverse('exercise-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['body'][0]), 'This field may not be blank.')
 
     def test_create_exercise_expired_null(self):
-        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text(),
+        data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': self.the_fake.text(),
                 'expire_date': ''}
         response = self.client.post(reverse('exercise-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -125,9 +124,9 @@ class ExerciseTest(APITestCase):
     def test_update_exercise(self):
         # Create new data for update
         exercise = mommy.make(Exercise, classroom=self.classroom)
-        fake_body = the_fake.text()
-        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': fake_body,
-                'expire_date': the_fake.date_time()}
+        fake_body = self.the_fake.text()
+        data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': fake_body,
+                'expire_date': self.the_fake.date_time()}
         response = self.client.put(reverse('exercise-detail', args=[exercise.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

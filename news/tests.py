@@ -9,19 +9,18 @@ from django.contrib.auth.models import Group
 from user.models import User
 from faker import Faker
 
-the_fake = Faker()
-
 
 class NewsTest(APITestCase):
 
     def setUp(self):
+        self.the_fake = Faker()
         self.student_group = mommy.make(Group, name=User.GroupType.STUDENT)
         self.teacher_group = mommy.make(Group, name=User.GroupType.TEACHER)
         self.user = mommy.make(get_user_model(), post=User.PostType.TEACHER, groups=[self.teacher_group])
         self.client.force_login(self.user)
 
         self.classroom = mommy.make(Classroom, teacher=self.user)
-        self.data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': the_fake.text()}
+        self.data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': self.the_fake.text()}
 
     def test_user_access(self):
         user = mommy.make(get_user_model(), post=User.PostType.STUDENT, groups=[self.student_group])
@@ -92,19 +91,19 @@ class NewsTest(APITestCase):
         self.assertEqual(exercise.classroom, self.classroom)
 
     def test_create_news_title_null(self):
-        data = {'classroom': self.classroom.id, 'title': '', 'body': the_fake.text()}
+        data = {'classroom': self.classroom.id, 'title': '', 'body': self.the_fake.text()}
         response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['title'][0]), 'This field may not be blank.')
 
     def test_create_news_body_null(self):
-        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': ''}
+        data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': ''}
         response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['body'][0]), 'This field may not be blank.')
 
     def test_create_news_classroom_null(self):
-        data = {'classroom': '', 'title': the_fake.text(), 'body': the_fake.text()}
+        data = {'classroom': '', 'title': self.the_fake.text(), 'body': self.the_fake.text()}
         response = self.client.post(reverse('news-list'), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(str(response.data['classroom'][0]), 'This field may not be null.')
@@ -112,8 +111,8 @@ class NewsTest(APITestCase):
     def test_update_news(self):
         # Create new data for update
         news = mommy.make(News, classroom=self.classroom)
-        fake_body = the_fake.text()
-        data = {'classroom': self.classroom.id, 'title': the_fake.text(), 'body': fake_body}
+        fake_body = self.the_fake.text()
+        data = {'classroom': self.classroom.id, 'title': self.the_fake.text(), 'body': fake_body}
         response = self.client.put(reverse('news-detail', args=[news.id]), data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # checked in database with id
