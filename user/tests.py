@@ -1,3 +1,5 @@
+import re
+
 from django.urls import reverse
 from model_mommy import mommy
 from rest_framework import status
@@ -67,6 +69,10 @@ class UserTest(APITestCase):
         # Check that there is only one user with the saved username
         username_query = User.objects.filter(username=self.user.username)
         self.assertEqual(username_query.count(), 1)
+
+    def test_user_email_address(self):
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        self.assertFalse(re.fullmatch(regex, "email"))
 
     def test_update_user(self):
         # sample old data
