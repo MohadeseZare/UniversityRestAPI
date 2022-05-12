@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from .models import Answer, Exercise
-from django import utils
+from django.utils import timezone
 from rest_framework.serializers import ValidationError
 
 
@@ -22,7 +22,7 @@ class AnswerSerializer(serializers.ModelSerializer):
         answers = Answer.objects.filter(student=attrs['student'])
 
         exercise = Exercise.objects.get(id=attrs['exercise'].id)
-        if exercise.expire_date < utils.timezone.now():
+        if exercise.expire_date < timezone.now():
             raise ValidationError("This exercise timeout.")
         if answers.filter(exercise=exercise) and self.context['request'].method == 'POST':
             raise ValidationError("you cant add Two Answer for One exercise.")

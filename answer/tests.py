@@ -11,8 +11,6 @@ from user.models import User
 from faker import Faker
 
 
-
-
 class AnswerTest(APITestCase):
 
     def setUp(self):
